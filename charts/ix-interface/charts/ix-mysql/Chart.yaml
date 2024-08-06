@@ -1,6 +1,6 @@
+apiVersion: v2
 name: ix-mysql
 description: MySQL DB used by the Ix's Hydra and Kratos.
-version: 0.1.0
-apiVersion: v2
+version: 1.0.0
 keywords:
   - ix-mysql
