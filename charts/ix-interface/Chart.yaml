@@ -7,8 +7,8 @@ keywords:
 
 dependencies:
   - name: ix-mongodb
+    version: 1.0.0
     repository: file://charts/ix-mongodb
-    condition: ix-mongodb.enabled
   - name: ix-mysql
+    version: 1.0.0
     repository: file://charts/ix-mysql
-    condition: ix-mysql.enabled
