@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ix-interface
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: ix-interface
+  template:
+    metadata:
+      labels:
+        app: ix-interface
+    spec:
+      containers:
+        - name: ix-fastapi
+          image: ghcr.io/hpn-bristol/ix-interface:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          env:
+            - name: HYDRA_ADMIN_URL
+              value: http://localhost:4445
+            - name: HYDRA_PUBLIC_URL
+              value: http://localhost:4444
+            - name: KRATOS_ADMIN_URL
+              value: http://localhost:4434
+            - name: KRATOS_PUBLIC_URL
+              value: http://localhost:4433
+            - name: ORION_URL
+              value: http://localhost:1026
+            - name: CYGNUS_URL
+              value: http://localhost:5051/notify
+            - name: REDIS_HOST
+              value: localhost
+            - name: MONGODB_CONNSTRING
+              value: {{ .Values.mongodb.connstr }}
+            - name: MONGODB_HOST
+              value: {{ .Values.mongodb.host }}
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ix-fastapi-admin-secret
+                  key: username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ix-fastapi-admin-secret
+                  key: password
+            - name: IX_HOST
+              value: {{ .Values.ixhost }}
+        
+        - name: hydra
+          image: oryd/hydra:v2.0.3
+          ports:
+            - containerPort: 4444
+            - containerPort: 4445
+            - containerPort: 5555
+          volumeMounts:
+            - name: hydra-config
+              mountPath: /etc/config
+          args:
+            - serve
+            - -c
+            - /etc/config/hydra.yml
+            - all
+            - --dev
+          env:
+            - name: DSN
+              value: {{ .Values.mysql.hydradsn }}
+            - name: HYDRA_URL
+              value: http://localhost:4445
+
+        - name: kratos
+          image: oryd/kratos:v0.10.1
+          ports:
+            - containerPort: 4433
+            - containerPort: 4434
+          volumeMounts:
+            - name: kratos-config
+              mountPath: /etc/config
+          args:
+            - serve
+            - -c
+            - /etc/config/kratos.yml
+            - --dev
+            - --watch-courier
+          env:
+            - name: DSN
+              value: {{ .Values.mysql.kratosdsn }}
+            - name: KRATOS_ADMIN_URL
+              value: http://localhost:4434
+            - name: LOG_LEVEL
+              value: trace
+
+        - name: fiware-orion
+          image: fiware/orion:3.8.1
+          args:
+            - -dbhost
+            - {{ .Values.mongodb.host }}
+            - -dbuser
+            - {{ .Values.mongodb.username }}
+            - -dbpwd
+            - {{ .Values.mongodb.password }}
+          ports:
+            - containerPort: 1026
+
+        - name: fiware-cygnus
+          image: telefonicaiot/fiware-cygnus:3.1.0
+          ports:
+            - containerPort: 5051
+            - containerPort: 5080
+          env:
+            - name: CYGNUS_API_PORT
+              value: "5080"
+            - name: CYGNUS_LOG_LEVEL
+              value: DEBUG
+            - name: CYGNUS_MONGO_ATTR_PERSISTENCE
+              value: column
+            - name: CYGNUS_MONGO_AUTH_SOURCE
+              value: admin
+            - name: CYGNUS_MONGO_COLLECTION_PREFIX
+              value: ix_
+            - name: CYGNUS_MONGO_DATA_MODEL
+              value: dm-by-entity
+            - name: CYGNUS_MONGO_DB_PREFIX
+              value: ix_
+            - name: CYGNUS_MONGO_HOSTS
+              value: {{ .Values.mongodb.host }}
+            - name: CYGNUS_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: username
+            - name: CYGNUS_MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: password
+            - name: CYGNUS_SERVICE_PORT
+              value: "5051"
+
+        - name: redis
+          image: redis:7.0.5
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+      
+      initContainers:
+        - name: hydra-migrate
+          image: oryd/hydra:v2.0.3
+          args:
+            - migrate
+            - -c
+            - /etc/config/hydra.yml
+            - sql
+            - -e
+            - --yes
+          env:
+            - name: DSN
+              value: {{ .Values.mysql.hydradsn }}
+          ports:
+            - containerPort: 4440
+          volumeMounts:
+            - name: hydra-config
+              mountPath: /etc/config/
+
+        - name: kratos-migrate
+          image: oryd/kratos:v0.10.1
+          args:
+            - -c
+            - /etc/config/kratos.yml
+            - migrate
+            - sql
+            - -e
+            - --yes
+          env:
+            - name: DSN
+              value: {{ .Values.mysql.kratosdsn }}
+          ports:
+            - containerPort: 4430
+          volumeMounts:
+            - name: kratos-config
+              mountPath: /etc/config/
+
+      restartPolicy: Always
+      volumes:
+        - name: hydra-config
+          configMap:
+            name: ix-hydra-configmap
+        - name: kratos-config
+          configMap:
+            name: ix-kratos-configmap
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-data-pvc

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ix-mongodb
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: ix-mongodb
+  template:
+    metadata:
+      labels:
+        app: ix-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:6.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongodb-data
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: password
+
+      restartPolicy: Always
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: mongodb-data-pvc

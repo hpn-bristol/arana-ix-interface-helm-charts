@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ix-mysql-init-configmap
+  namespace: {{ .Values.global.namespace }}
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS hydra;
+    CREATE DATABASE IF NOT EXISTS kratos;

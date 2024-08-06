@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ix-mysql
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: ix-mysql
+  template:
+    metadata:
+      labels:
+        app: ix-mysql
+    spec:
+      containers:
+        - name: mysql-admin
+          image: mysql:8.0.26
+          ports:
+            - containerPort: 3306
+              name: ix-mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mysql-secret
+                  key: password
+
+      restartPolicy: Always
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data-pvc
+        - name: mysql-init
+          configMap:
+            name: ix-mysql-init-configmap
