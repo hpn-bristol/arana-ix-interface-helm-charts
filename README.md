@@ -6,7 +6,7 @@ Ix can be easily installed on a Kubernetes cluster with the following steps. Mak
 
 1. Go to the `/charts` subfolder.
     ```bash
-    cd helms
+    cd charts
     ```
 2. Install Ix Interface using helm.
     ```bash
