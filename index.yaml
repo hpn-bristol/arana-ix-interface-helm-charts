@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   ix-interface:
   - apiVersion: v2
+    created: "2024-09-10T12:09:13.547785351Z"
+    dependencies:
+    - name: ix-mongodb
+      repository: file://charts/ix-mongodb
+      version: 1.0.0
+    - name: ix-mysql
+      repository: file://charts/ix-mysql
+      version: 1.0.0
+    description: Framework enabling RIC-to-RIC communication.
+    digest: fa89e46b83e4e52ff7a0ba8bc7a32cec98c9588388ff08bc0fa2b74d880b99d8
+    keywords:
+    - ix-interface
+    name: ix-interface
+    urls:
+    - https://github.com/hpn-bristol/arana-ix-interface-helm-charts/releases/download/ix-interface-1.2/ix-interface-1.2.tgz
+    version: "1.2"
+  - apiVersion: v2
     created: "2024-08-06T17:54:45.209206035Z"
     dependencies:
     - name: ix-mongodb
@@ -35,4 +52,4 @@ entries:
     urls:
     - https://github.com/hpn-bristol/arana-ix-interface-helm-charts/releases/download/ix-interface-1.0.0/ix-interface-1.0.0.tgz
     version: 1.0.0
-generated: "2024-08-06T17:54:45.209214941Z"
+generated: "2024-09-10T12:09:13.547801641Z"
