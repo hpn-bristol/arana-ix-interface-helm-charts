@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ix-fastapi
-          image: ghcr.io/hpn-bristol/ix-interface-alpine:latest
+          image: ghcr.io/hpn-bristol/ix-interface-alpine:1.2
           imagePullPolicy: Always
           ports:
             - containerPort: 80
