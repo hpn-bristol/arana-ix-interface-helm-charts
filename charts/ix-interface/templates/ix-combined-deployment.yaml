@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ix-interface
-  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     matchLabels:

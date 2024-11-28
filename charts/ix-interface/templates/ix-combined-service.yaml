@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1 
 metadata:
   name: ix-interface
-  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: ix-interface

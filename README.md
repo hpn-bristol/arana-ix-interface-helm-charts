@@ -10,9 +10,9 @@ Ix can be easily installed on a Kubernetes cluster with the following steps. Mak
     ```
 2. Install Ix Interface using helm.
     ```bash
-    helm install -n SET-YOUR-NAMESPACE --set global.namespace=SET-YOUR-NAMESPACE --set ixhost=http://$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}'):31234 ix-interface ix-interface
+    helm install -n SET-YOUR-NAMESPACE --set ixhost=http://SET-YOUR-HOST-ADDRESS:31234 ix-interface ix-interface
     ```
-    ***NOTICE:** Make sure to set your desired namespace for both the -n flag and the `global.namespace` value.*
+    ***NOTICE:** Make sure to set the correct namespace and host address values*
 
 ### Services
 
