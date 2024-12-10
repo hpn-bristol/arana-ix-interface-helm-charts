@@ -1,6 +1,6 @@
 name: ix-interface
 description: Framework enabling RIC-to-RIC communication.
-version: 1.3.0
+version: 1.4.0
 apiVersion: v2
 keywords:
   - ix-interface
