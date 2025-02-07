@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: redis-data-pv
+  name: ix-redis-data-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/redis_data"
+    path: "/mnt/ix-redis-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis-data-pvc
+  name: ix-redis-data-pvc
 spec:
   storageClassName: manual
   accessModes:

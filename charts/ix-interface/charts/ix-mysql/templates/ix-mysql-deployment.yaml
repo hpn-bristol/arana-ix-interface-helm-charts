@@ -33,7 +33,7 @@ spec:
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql-data-pvc
+            claimName: ix-mysql-data-pvc
         - name: mysql-init
           configMap:
             name: ix-mysql-init-configmap

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mongodb-data-pv
+  name: ix-mongodb-data-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/mongo_data"
+    path: "/mnt/ix-mongo-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongodb-data-pvc
+  name: ix-mongodb-data-pvc
 spec:
   storageClassName: manual
   accessModes:

@@ -194,4 +194,4 @@ spec:
             name: ix-kratos-configmap
         - name: redis-data
           persistentVolumeClaim:
-            claimName: redis-data-pvc
+            claimName: ix-redis-data-pvc
