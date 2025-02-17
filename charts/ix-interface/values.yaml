@@ -1,8 +1,7 @@
 mongodb:
-  username: "root"
-  password: "secret"
-  connstr: mongodb://root:secret@ix-mongodb/
   host: ix-mongodb
-mysql:
-  hydradsn: mysql://root:secret@tcp(ix-mysql)/hydra?max_conns=20&max_idle_conns=4
-  kratosdsn: mysql://root:secret@tcp(ix-mysql)/kratos?max_conns=20&max_idle_conns=4
+  hostDirect: ix-mongodb/?directConnection=true
+  replicaSet: rs0
+
+ix-mongodb:
+  initdbScriptsConfigMap: mongodb-init-script

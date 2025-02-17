@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: ix-fastapi
-          image: ghcr.io/hpn-bristol/ix-interface:1.4
+          image: ghcr.io/hpn-bristol/ix-interface:1.6
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -33,9 +33,12 @@ spec:
             - name: REDIS_HOST
               value: localhost
             - name: MONGODB_CONNSTRING
-              value: {{ .Values.mongodb.connstr }}
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: connstr
             - name: MONGODB_HOST
-              value: {{ .Values.mongodb.host }}
+              value: {{ .Values.mongodb.hostDirect }}
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -66,7 +69,10 @@ spec:
             - --dev
           env:
             - name: DSN
-              value: {{ .Values.mysql.hydradsn }}
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mysql-secret
+                  key: hydradsn
             - name: HYDRA_URL
               value: http://localhost:4445
 
@@ -86,7 +92,10 @@ spec:
             - --watch-courier
           env:
             - name: DSN
-              value: {{ .Values.mysql.kratosdsn }}
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mysql-secret
+                  key: kratosdsn
             - name: KRATOS_ADMIN_URL
               value: http://localhost:4434
             - name: LOG_LEVEL
@@ -94,15 +103,25 @@ spec:
 
         - name: fiware-orion
           image: fiware/orion:3.8.1
-          args:
-            - -dbhost
-            - {{ .Values.mongodb.host }}
-            - -dbuser
-            - {{ .Values.mongodb.username }}
-            - -dbpwd
-            - {{ .Values.mongodb.password }}
           ports:
             - containerPort: 1026
+          env:
+            - name: ORION_LOG_LEVEL
+              value: DEBUG
+            - name: ORION_MONGO_HOST
+              value: {{ .Values.mongodb.host }}
+            - name: ORION_MONGO_REPLICA_SET
+              value: {{ .Values.mongodb.replicaSet }}
+            - name: ORION_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: username
+            - name: ORION_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mongodb-secret
+                  key: password
 
         - name: fiware-cygnus
           image: telefonicaiot/fiware-cygnus:3.1.0
@@ -126,6 +145,8 @@ spec:
               value: ix_
             - name: CYGNUS_MONGO_HOSTS
               value: {{ .Values.mongodb.host }}
+            - name: CYGNUS_MONGO_REPLICA_SET
+              value: {{ .Values.mongodb.replicaSet }}
             - name: CYGNUS_MONGO_USER
               valueFrom:
                 secretKeyRef:
@@ -159,7 +180,10 @@ spec:
             - --yes
           env:
             - name: DSN
-              value: {{ .Values.mysql.hydradsn }}
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mysql-secret
+                  key: hydradsn
           ports:
             - containerPort: 4440
           volumeMounts:
@@ -177,7 +201,10 @@ spec:
             - --yes
           env:
             - name: DSN
-              value: {{ .Values.mysql.kratosdsn }}
+              valueFrom:
+                secretKeyRef:
+                  name: ix-mysql-secret
+                  key: kratosdsn
           ports:
             - containerPort: 4430
           volumeMounts:

@@ -13,13 +13,17 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: mongo:6.0
+          image: bitnami/mongodb:6.0
           ports:
             - containerPort: 27017
           volumeMounts:
             - mountPath: /data/db
               name: mongodb-data
+            - mountPath: /init
+              name: mongodb-init
           env:
+            - name: MONGODB_HOST
+              value: {{ .Values.mongodb.host }}
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -36,3 +40,6 @@ spec:
         - name: mongodb-data
           persistentVolumeClaim:
             claimName: ix-mongodb-data-pvc
+        - name: mongodb-init
+          persistentVolumeClaim:
+            claimName: ix-mongodb-init-pvc
