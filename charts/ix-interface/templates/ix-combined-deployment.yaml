@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: ix-fastapi
-          image: ghcr.io/hpn-bristol/ix-interface:1.6
+          image: ghcr.io/hpn-bristol/ix-interface:1.6.1
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -167,7 +167,7 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: redis-data
-              
+
       initContainers:
         - name: hydra-migrate
           image: oryd/hydra:v2.0.3
