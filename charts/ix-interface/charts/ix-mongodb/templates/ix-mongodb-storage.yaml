@@ -9,9 +9,10 @@ spec:
   capacity:
     storage: 4Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: "/mnt/ix-mongo-data"
+    type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -20,7 +21,7 @@ metadata:
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 4Gi

@@ -38,7 +38,7 @@ spec:
                   name: ix-mongodb-secret
                   key: connstr
             - name: MONGODB_HOST
-              value: {{ .Values.mongodb.hostDirect }}
+              value: {{ .Values.global.mongodb.hostDirect }}
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -51,7 +51,7 @@ spec:
                   key: password
             - name: IX_HOST
               value: {{ .Values.ixhost }}
-        
+
         - name: hydra
           image: oryd/hydra:v2.0.3
           ports:
@@ -109,9 +109,9 @@ spec:
             - name: ORION_LOG_LEVEL
               value: DEBUG
             - name: ORION_MONGO_HOST
-              value: {{ .Values.mongodb.host }}
+              value: {{ .Values.global.mongodb.host }}
             - name: ORION_MONGO_REPLICA_SET
-              value: {{ .Values.mongodb.replicaSet }}
+              value: {{ .Values.global.mongodb.replicaSet }}
             - name: ORION_MONGO_USER
               valueFrom:
                 secretKeyRef:
@@ -144,9 +144,9 @@ spec:
             - name: CYGNUS_MONGO_DB_PREFIX
               value: ix_
             - name: CYGNUS_MONGO_HOSTS
-              value: {{ .Values.mongodb.host }}
+              value: {{ .Values.global.mongodb.host }}
             - name: CYGNUS_MONGO_REPLICA_SET
-              value: {{ .Values.mongodb.replicaSet }}
+              value: {{ .Values.global.mongodb.replicaSet }}
             - name: CYGNUS_MONGO_USER
               valueFrom:
                 secretKeyRef:
@@ -167,7 +167,7 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: redis-data
-      
+              
       initContainers:
         - name: hydra-migrate
           image: oryd/hydra:v2.0.3

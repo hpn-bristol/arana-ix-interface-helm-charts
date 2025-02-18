@@ -1,7 +1,5 @@
-mongodb:
-  host: ix-mongodb
-  hostDirect: ix-mongodb/?directConnection=true
-  replicaSet: rs0
-
-ix-mongodb:
-  initdbScriptsConfigMap: mongodb-init-script
+global:
+  mongodb:
+    host: ix-mongodb
+    hostDirect: ix-mongodb/?directConnection=true
+    replicaSet: rs0
