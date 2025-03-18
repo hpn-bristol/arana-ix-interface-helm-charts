@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ix-mongodb
 description: MongoDB used by the Ix and xApps.
-version: 1.1.0
+version: 1.1.1
 keywords:
   - ix-mongodb

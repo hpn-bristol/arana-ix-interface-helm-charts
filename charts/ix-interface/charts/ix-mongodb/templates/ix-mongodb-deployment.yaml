@@ -11,6 +11,15 @@ spec:
       labels:
         app: ix-mongodb
     spec:
+      initContainers:
+        - name: volume-permissions
+          image: busybox
+          command: ['sh', '-c', 'chown -R 1001:1001 /bitnami/mongodb/data/db']
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /bitnami/mongodb/data/db
+              name: mongodb-data
       containers:
         - name: mongodb
           image: bitnami/mongodb:6.0
