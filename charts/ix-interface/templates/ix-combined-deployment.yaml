@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: ix-fastapi
-          image: ghcr.io/hpn-bristol/ix-interface:1.6.1
+          image: ghcr.io/hpn-bristol/ix-interface:1.7
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -38,7 +38,7 @@ spec:
                   name: ix-mongodb-secret
                   key: connstr
             - name: MONGODB_HOST
-              value: {{ .Values.global.mongodb.hostDirect }}
+              value: { { .Values.global.mongodb.hostDirect } }
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -50,7 +50,7 @@ spec:
                   name: ix-fastapi-admin-secret
                   key: password
             - name: IX_HOST
-              value: {{ .Values.ixhost }}
+              value: { { .Values.ixhost } }
 
         - name: hydra
           image: oryd/hydra:v2.0.3
@@ -109,9 +109,9 @@ spec:
             - name: ORION_LOG_LEVEL
               value: DEBUG
             - name: ORION_MONGO_HOST
-              value: {{ .Values.global.mongodb.host }}
+              value: { { .Values.global.mongodb.host } }
             - name: ORION_MONGO_REPLICA_SET
-              value: {{ .Values.global.mongodb.replicaSet }}
+              value: { { .Values.global.mongodb.replicaSet } }
             - name: ORION_MONGO_USER
               valueFrom:
                 secretKeyRef:
@@ -144,9 +144,9 @@ spec:
             - name: CYGNUS_MONGO_DB_PREFIX
               value: ix_
             - name: CYGNUS_MONGO_HOSTS
-              value: {{ .Values.global.mongodb.host }}
+              value: { { .Values.global.mongodb.host } }
             - name: CYGNUS_MONGO_REPLICA_SET
-              value: {{ .Values.global.mongodb.replicaSet }}
+              value: { { .Values.global.mongodb.replicaSet } }
             - name: CYGNUS_MONGO_USER
               valueFrom:
                 secretKeyRef:
